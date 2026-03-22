@@ -56,6 +56,17 @@ PRIVATE
     ${VIDEO_DIR}/src/osal_files_unix.c
 )
 
+set(NO_ASM 1)
+if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86")
+	set(NO_ASM 0)
+elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+	set(NO_ASM 0)
+endif()
+
+if(${NO_ASM} EQUAL 1)
+	target_compile_definitions(video PRIVATE NO_ASM=1)
+endif()
+
 add_custom_command(
     TARGET video POST_BUILD
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/static_link_stub/redefine_syms.py -o ${CMAKE_OBJDUMP} -i $<TARGET_FILE_NAME:video> -r ${PROJECT_BINARY_DIR}/video_syms.txt -b video_
