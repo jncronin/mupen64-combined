@@ -38,7 +38,7 @@ PRIVATE
     ${CORE_DIR}/subprojects/minizip
     ${CORE_DIR}/subprojects/md5
     ${CORE_DIR}/subprojects
-    ${PROJECT_BUILD_DIR}
+    ${PROJECT_BINARY_DIR}/
 )
 
 target_compile_definitions(core
