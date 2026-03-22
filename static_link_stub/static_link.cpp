@@ -9,6 +9,7 @@ extern "C" {
 extern "C"
 {
     void *core_getproc(const char *name);
+    void *video_getproc(const char *name);
 }
 
 #include <cstdio>
@@ -23,11 +24,33 @@ const char *osal_libsearchpath[] = { nullptr };
 #define LIB_RSP     (0x0acc)
 #define LIB_INPUT   (0x1111)
 
+/* return a static list of modules */
+static const osal_lib_search mod_video
+{
+    .filepath = "video.mod",
+    .filename = (char *)"video.mod",
+    .plugin_type = M64PLUGIN_GFX,
+    .next = nullptr
+};
+
+static const osal_lib_search mod_core
+{
+    .filepath = "libmupen64plus.so.2",
+    .filename = (char *)"libmupen64plus.so.2",
+    .plugin_type = M64PLUGIN_CORE,
+    .next = (osal_lib_search *)&mod_video,
+};
+
 m64p_error osal_dynlib_open(m64p_dynlib_handle *pLibHandle, const char *pccLibraryPath)
 {
     if(strcmp("libmupen64plus.so.2", pccLibraryPath) == 0)
     {
         *pLibHandle = (m64p_dynlib_handle)LIB_CORE;
+        return M64ERR_SUCCESS;
+    }
+    else if(strcmp("video.mod", pccLibraryPath) == 0)
+    {
+        *pLibHandle = (m64p_dynlib_handle)LIB_VIDEO;
         return M64ERR_SUCCESS;
     }
     fprintf(stderr, "OSAL_DYNLIB_OPEN: %s\n", pccLibraryPath);
@@ -40,6 +63,8 @@ void *     osal_dynlib_getproc(m64p_dynlib_handle LibHandle, const char *pccProc
     {
         case LIB_CORE:
             return core_getproc(pccProcedureName);
+        case LIB_VIDEO:
+            return video_getproc(pccProcedureName);
     }
     fprintf(stderr, "OSAL_DYNLIB_GETPROC: %s\n", pccProcedureName);
     return nullptr;
@@ -54,7 +79,7 @@ m64p_error osal_dynlib_close(m64p_dynlib_handle LibHandle)
 osal_lib_search *osal_library_search(const char *searchpath)
 {
     fprintf(stderr, "OSAL_LIBRARY_SEARCH: %s\n", searchpath);
-    return nullptr;
+    return (osal_lib_search *)&mod_core;
 }
 
 void             osal_free_lib_list(osal_lib_search *head)

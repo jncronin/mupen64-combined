@@ -9,6 +9,7 @@ set(UI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mupen64plus-ui-console)
 
 target_link_libraries(mupen64plus
 PRIVATE
+    video
     core
     SDL2::SDL2
     Threads::Threads
@@ -34,4 +35,5 @@ PRIVATE
     ${UI_DIR}/src/plugin.c
     ${CMAKE_CURRENT_SOURCE_DIR}/static_link_stub/static_link.cpp
     ${PROJECT_BINARY_DIR}/static_core.cpp
+    ${PROJECT_BINARY_DIR}/static_video.cpp
 )
