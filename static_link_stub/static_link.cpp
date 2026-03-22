@@ -10,6 +10,7 @@ extern "C"
 {
     void *core_getproc(const char *name);
     void *video_getproc(const char *name);
+    void *rsp_getproc(const char *name);
 }
 
 #include <cstdio>
@@ -25,12 +26,20 @@ const char *osal_libsearchpath[] = { nullptr };
 #define LIB_INPUT   (0x1111)
 
 /* return a static list of modules */
+static const osal_lib_search mod_rsp
+{
+    .filepath = "rsp.mod",
+    .filename = (char *)"rsp.mod",
+    .plugin_type = M64PLUGIN_RSP,
+    .next = nullptr
+};
+
 static const osal_lib_search mod_video
 {
     .filepath = "video.mod",
     .filename = (char *)"video.mod",
     .plugin_type = M64PLUGIN_GFX,
-    .next = nullptr
+    .next = (osal_lib_search *)&mod_rsp,
 };
 
 static const osal_lib_search mod_core
@@ -53,6 +62,11 @@ m64p_error osal_dynlib_open(m64p_dynlib_handle *pLibHandle, const char *pccLibra
         *pLibHandle = (m64p_dynlib_handle)LIB_VIDEO;
         return M64ERR_SUCCESS;
     }
+    else if(strcmp("rsp.mod", pccLibraryPath) == 0)
+    {
+        *pLibHandle = (m64p_dynlib_handle)LIB_RSP;
+        return M64ERR_SUCCESS;
+    }
     fprintf(stderr, "OSAL_DYNLIB_OPEN: %s\n", pccLibraryPath);
     return M64ERR_SYSTEM_FAIL;
 }
@@ -65,6 +79,8 @@ void *     osal_dynlib_getproc(m64p_dynlib_handle LibHandle, const char *pccProc
             return core_getproc(pccProcedureName);
         case LIB_VIDEO:
             return video_getproc(pccProcedureName);
+        case LIB_RSP:
+            return rsp_getproc(pccProcedureName);
     }
     fprintf(stderr, "OSAL_DYNLIB_GETPROC: %s\n", pccProcedureName);
     return nullptr;

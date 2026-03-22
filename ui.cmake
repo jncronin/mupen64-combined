@@ -9,6 +9,7 @@ set(UI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mupen64plus-ui-console)
 
 target_link_libraries(mupen64plus
 PRIVATE
+    rsp
     video
     core
     SDL2::SDL2
@@ -24,6 +25,8 @@ PRIVATE
 )
 
 add_dependencies(mupen64plus static_core_target)
+add_dependencies(mupen64plus static_video_target)
+add_dependencies(mupen64plus static_rsp_target)
 
 target_sources(mupen64plus
 PRIVATE
@@ -36,4 +39,5 @@ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/static_link_stub/static_link.cpp
     ${PROJECT_BINARY_DIR}/static_core.cpp
     ${PROJECT_BINARY_DIR}/static_video.cpp
+    ${PROJECT_BINARY_DIR}/static_rsp.cpp
 )
