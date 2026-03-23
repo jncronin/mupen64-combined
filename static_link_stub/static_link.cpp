@@ -11,6 +11,7 @@ extern "C"
     void *core_getproc(const char *name);
     void *video_getproc(const char *name);
     void *rsp_getproc(const char *name);
+    void *audio_getproc(const char *name);
 }
 
 #include <cstdio>
@@ -24,14 +25,23 @@ const char *osal_libsearchpath[] = { nullptr };
 #define LIB_VIDEO   (0x1de0)
 #define LIB_RSP     (0x0acc)
 #define LIB_INPUT   (0x1111)
+#define LIB_AUDIO   (0xad10)
 
 /* return a static list of modules */
+static const osal_lib_search mod_audio
+{
+    .filepath = "audio.mod",
+    .filename = (char *)"audio.mod",
+    .plugin_type = M64PLUGIN_AUDIO,
+    .next = nullptr
+};
+
 static const osal_lib_search mod_rsp
 {
     .filepath = "rsp.mod",
     .filename = (char *)"rsp.mod",
     .plugin_type = M64PLUGIN_RSP,
-    .next = nullptr
+    .next = (osal_lib_search *)&mod_audio
 };
 
 static const osal_lib_search mod_video
@@ -67,6 +77,12 @@ m64p_error osal_dynlib_open(m64p_dynlib_handle *pLibHandle, const char *pccLibra
         *pLibHandle = (m64p_dynlib_handle)LIB_RSP;
         return M64ERR_SUCCESS;
     }
+    else if(strcmp("audio.mod", pccLibraryPath) == 0)
+    {
+        *pLibHandle = (m64p_dynlib_handle)LIB_AUDIO;
+        return M64ERR_SUCCESS;
+    }
+
     fprintf(stderr, "OSAL_DYNLIB_OPEN: %s\n", pccLibraryPath);
     return M64ERR_SYSTEM_FAIL;
 }
@@ -81,6 +97,8 @@ void *     osal_dynlib_getproc(m64p_dynlib_handle LibHandle, const char *pccProc
             return video_getproc(pccProcedureName);
         case LIB_RSP:
             return rsp_getproc(pccProcedureName);
+        case LIB_AUDIO:
+            return audio_getproc(pccProcedureName);
     }
     fprintf(stderr, "OSAL_DYNLIB_GETPROC: %s\n", pccProcedureName);
     return nullptr;
