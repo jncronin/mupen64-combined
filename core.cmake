@@ -18,6 +18,8 @@ PRIVATE
 add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/asm_defines_nasm.h ${PROJECT_BINARY_DIR}/asm_defines_gas.h
     DEPENDS asm_defines
+    COMMAND ${CMAKE_COMMAND} -E rm -f ${PROJECT_BINARY_DIR}/asm_defines_nasm.h
+    COMMAND ${CMAKE_COMMAND} -E rm -f ${PROJECT_BINARY_DIR}/asm_defines_gas.h
     COMMAND bash ${CORE_DIR}/tools/gen_asm_script.sh ${PROJECT_BINARY_DIR} $<TARGET_FILE_NAME:asm_defines>
     VERBATIM
 )
@@ -144,10 +146,12 @@ if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86")
     target_compile_definitions(core
     PRIVATE
         NEW_DYNAREC=1
+        DYNAREC
     )
     target_compile_definitions(asm_defines
     PRIVATE
         NEW_DYNAREC=1
+        DYNAREC
     )
     target_sources(core
     PRIVATE
@@ -159,10 +163,12 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
     target_compile_definitions(core
     PRIVATE
         NEW_DYNAREC=2
+        DYNAREC
     )
     target_compile_definitions(asm_defines
     PRIVATE
         NEW_DYNAREC=2
+        DYNAREC
     )
     target_sources(core
     PRIVATE
@@ -173,10 +179,12 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "arm")
     target_compile_definitions(core
     PRIVATE
         NEW_DYNAREC=3
+        DYNAREC
     )
     target_compile_definitions(asm_defines
     PRIVATE
         NEW_DYNAREC=3
+        DYNAREC
     )
     target_sources(core
     PRIVATE
@@ -188,10 +196,12 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
     target_compile_definitions(core
     PRIVATE
         NEW_DYNAREC=4
+        DYNAREC
     )
     target_compile_definitions(asm_defines
     PRIVATE
         NEW_DYNAREC=4
+        DYNAREC
     )
     target_sources(core
     PRIVATE
