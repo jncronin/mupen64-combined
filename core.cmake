@@ -46,6 +46,7 @@ PRIVATE
     M64P_PARALLEL
     NO_CRYPT
     NO_UNCRYPT
+    IOAPI_NO_64
 )
 
 target_link_libraries(core
