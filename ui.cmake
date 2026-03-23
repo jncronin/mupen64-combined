@@ -14,6 +14,7 @@ if(GAMEKID)
         rsp
         video
         audio
+        input
         core
         SDL2::SDL2
         Threads::Threads
@@ -29,6 +30,7 @@ else()
         rsp
         video
         audio
+        input
         core
         SDL2::SDL2
         ${PNG_LIBRARIES}
@@ -46,6 +48,7 @@ add_dependencies(mupen64plus static_core_target)
 add_dependencies(mupen64plus static_video_target)
 add_dependencies(mupen64plus static_rsp_target)
 add_dependencies(mupen64plus static_audio_target)
+add_dependencies(mupen64plus static_input_target)
 
 target_sources(mupen64plus
 PRIVATE
@@ -60,4 +63,5 @@ PRIVATE
     ${PROJECT_BINARY_DIR}/static_video.cpp
     ${PROJECT_BINARY_DIR}/static_rsp.cpp
     ${PROJECT_BINARY_DIR}/static_audio.cpp
+    ${PROJECT_BINARY_DIR}/static_input.cpp
 )
