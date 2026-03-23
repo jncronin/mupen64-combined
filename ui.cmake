@@ -7,16 +7,32 @@ pkg_check_modules(PNG REQUIRED libpng)
 
 set(UI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mupen64plus-ui-console)
 
-target_link_libraries(mupen64plus
-PRIVATE
-    rsp
-    video
-    core
-    SDL2::SDL2
-    Threads::Threads
-    ${PNG_LIBRARIES}
-    z
-)
+if(GAMEKID)
+    message(NOTICE "GK build")
+    target_link_libraries(mupen64plus
+    PRIVATE
+        rsp
+        video
+        core
+        SDL2::SDL2
+        Threads::Threads
+        ${PNG_LIBRARIES}
+        GL
+        llvm
+        z
+    )
+else()
+    message(NOTICE "normal build")
+    target_link_libraries(mupen64plus
+    PRIVATE
+        rsp
+        video
+        core
+        SDL2::SDL2
+        ${PNG_LIBRARIES}
+        GL
+    )
+endif()
 
 target_include_directories(mupen64plus
 PRIVATE
