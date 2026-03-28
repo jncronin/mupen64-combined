@@ -1,0 +1,14 @@
+This is mupen64plus (https://mupen64plus.org) packaged as a single statically linked executable for use on the GK (https://github.com/jncronin/gk).
+
+It uses the typical modules packaged for the standard binary release of mupen64plus (core, ui-console, rsp-hle, video-rice, audio-sdl and input-sdl) with the addition of a cmake build system.
+
+Requirements:
+SDL2
+GL
+libz
+Python3 (for build-time scripts)
+Optional libspeex, libsamplerate for the audio module.
+
+To avoid overlapping symbol names in the various modules, the libraries have their exported symbols prefixed by the library name e.g. PluginGetVersion in video-rice becomes video_PluginGetVersion.  This happens in the static_link_stub/redefine_syms.py build step.
+
+Finally, the glue logic between the modules is within static_link_stub/static_link.cpp.  This file implements the osal_* functions to provide the requested module functions to the core/other modules.  It relies on a large if(strcmp()) else if(setcmp())... table to convert the text names of the functions to their actual addresses.  Whilst not the quickest, these functions are only called once at load time and therefore relatively unintersting to optimise.  The actual strcmp() tables are dynamically generated at build time from the relevant module static libraries by the static_link_stub/gen_static_link.py script.  This script creates a module_getproc() function that is called from static_link.cpp.
