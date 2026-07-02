@@ -19,8 +19,8 @@ if(GAMEKID)
         SDL2::SDL2
         Threads::Threads
         ${PNG_LIBRARIES}
+        GKGL
         GL
-        llvm
         z
     )
 else()
